@@ -1,0 +1,73 @@
+{
+  "name": "필수 policy 누락",
+  "input_valid": false,
+  "input": {
+    "state": "안녕하세요",
+    "sources": [
+      {
+        "id": "s1",
+        "kind": "direct",
+        "label": "사용자 직접 입력",
+        "scope": "제공된 대상 전체",
+        "complete": true,
+        "state_paths": [
+          ""
+        ]
+      }
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "type": "choice",
+        "instructions": "메시지 의도를 분류하라. 정보 부족은 기타로 처리하지 않는다.",
+        "choices": [
+          {
+            "value": "order",
+            "meaning": "품목과 수량이 명시된 새 발주 요청"
+          },
+          {
+            "value": "ack",
+            "meaning": "이미 받은 건의 접수·처리 안내"
+          },
+          {
+            "value": "return",
+            "meaning": "물품을 돌려보내려는 요청"
+          },
+          {
+            "value": "other",
+            "meaning": "발주·접수응답·반납이 아닌 독립 주제"
+          }
+        ]
+      }
+    ],
+    "unit": {
+      "mode": "single",
+      "subjects": [
+        {
+          "subject_id": "subject-1",
+          "pointer": "",
+          "source_ids": [
+            "s1"
+          ]
+        }
+      ],
+      "complete": true
+    }
+  },
+  "expected": {
+    "results": [
+      {
+        "subject_id": "__request__",
+        "id": "__request__",
+        "type": "request",
+        "status": "invalid_input",
+        "value": null,
+        "reason_code": "MISSING_REQUIRED_FIELD",
+        "evidence": [],
+        "review_required": true
+      }
+    ]
+  },
+  "rationale": "필수 계약이 없어 요청 전체를 거부한다. 선택값을 임의 생성하지 않는다. 오류 봉투의 type은 질문 결과와 겹치지 않는 전용 값 request다.",
+  "evaluation": "authored_expectation_not_model_run"
+}

@@ -1,0 +1,1 @@
+{"ledger_id": "L-00001", "question_id": "vendor", "type": "choice", "key": ["그린성형"], "value": "C-101", "decided_by": "김우빈", "decided_at": "2026-10-14T13:38:03+00:00", "request_ref": "2026-10-14.json", "subject_id": "M-1002", "policy_hash": "sha256:8c3e428f4e7c603d21df78a1e47e0e45fa96ea215c73a7e67fb566a2100ef630", "note": "그린성형 = 논현점(C-101). 서현점은 '그린성형 서현'으로 표기함"}

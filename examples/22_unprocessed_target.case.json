@@ -1,0 +1,136 @@
+{
+  "name": "미처리 대상 명시",
+  "input_valid": true,
+  "input": {
+    "state": [
+      {
+        "id": "J-1",
+        "affected_users": 0
+      },
+      {
+        "id": "J-2",
+        "affected_users": 4
+      },
+      {
+        "id": "J-3",
+        "affected_users": 12
+      }
+    ],
+    "sources": [
+      {
+        "id": "s1",
+        "kind": "json",
+        "label": "가상 json 입력",
+        "scope": "제공된 대상 전체",
+        "complete": true,
+        "state_paths": [
+          ""
+        ]
+      }
+    ],
+    "policy": {
+      "rules": [
+        "affected_users는 0 이상 정수이며 단위는 명이다. 점수는 확률이 아니다."
+      ]
+    },
+    "questions": [
+      {
+        "id": "q1",
+        "type": "score",
+        "instructions": "영향받는 사용자 수에 해당하는 우선순위 점수 하나를 준다.",
+        "rubric": [
+          {
+            "score": 0,
+            "criteria": "0명"
+          },
+          {
+            "score": 2,
+            "criteria": "1~9명"
+          },
+          {
+            "score": 4,
+            "criteria": "10명 이상"
+          }
+        ]
+      }
+    ],
+    "unit": {
+      "mode": "row",
+      "subjects": [
+        {
+          "subject_id": "J-1",
+          "pointer": "/0",
+          "source_ids": [
+            "s1"
+          ]
+        },
+        {
+          "subject_id": "J-2",
+          "pointer": "/1",
+          "source_ids": [
+            "s1"
+          ]
+        },
+        {
+          "subject_id": "J-3",
+          "pointer": "/2",
+          "source_ids": [
+            "s1"
+          ]
+        }
+      ],
+      "complete": true,
+      "omitted_subject_ids": [
+        "J-3"
+      ]
+    }
+  },
+  "expected": {
+    "results": [
+      {
+        "subject_id": "J-1",
+        "id": "q1",
+        "type": "score",
+        "status": "decided",
+        "value": 0,
+        "reason_code": "RUBRIC_MATCH",
+        "evidence": [
+          {
+            "source_id": "s1",
+            "location": "/0/affected_users",
+            "fact": "0"
+          }
+        ],
+        "review_required": false
+      },
+      {
+        "subject_id": "J-2",
+        "id": "q1",
+        "type": "score",
+        "status": "decided",
+        "value": 2,
+        "reason_code": "RUBRIC_MATCH",
+        "evidence": [
+          {
+            "source_id": "s1",
+            "location": "/1/affected_users",
+            "fact": "4"
+          }
+        ],
+        "review_required": false
+      },
+      {
+        "subject_id": "J-3",
+        "id": "q1",
+        "type": "score",
+        "status": "needs_review",
+        "value": null,
+        "reason_code": "NOT_PROCESSED",
+        "evidence": [],
+        "review_required": true
+      }
+    ]
+  },
+  "rationale": "미처리 대상도 질문마다 null 결과가 있어야 하며 행 자체를 누락하면 검증 실패다.",
+  "evaluation": "authored_expectation_not_model_run"
+}

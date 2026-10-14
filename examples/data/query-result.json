@@ -1,0 +1,17 @@
+[
+  {
+    "record_id": "D-1",
+    "status": "open",
+    "due_at": "2026-10-14T08:00:00Z"
+  },
+  {
+    "record_id": "D-2",
+    "status": "closed",
+    "due_at": "2026-10-13T08:00:00Z"
+  },
+  {
+    "record_id": "D-3",
+    "status": "open",
+    "due_at": null
+  }
+]

@@ -1,0 +1,32 @@
+{
+  "policy": {
+    "rules": [
+      "affected_users는 0 이상 정수이며 단위는 명이다. 점수는 확률이 아니다."
+    ]
+  },
+  "questions": [
+    {
+      "id": "q1",
+      "type": "score",
+      "instructions": "영향받는 사용자 수에 해당하는 우선순위 점수 하나를 준다.",
+      "rubric": [
+        {
+          "score": 0,
+          "criteria": "0명"
+        },
+        {
+          "score": 2,
+          "criteria": "1~9명"
+        },
+        {
+          "score": 4,
+          "criteria": "10명 이상"
+        }
+      ]
+    }
+  ],
+  "unit": {
+    "mode": "row",
+    "id_field": "id"
+  }
+}

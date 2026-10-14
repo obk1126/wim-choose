@@ -1,0 +1,159 @@
+{
+  "state": [
+    {
+      "msg_id": "M-1001",
+      "sender": "서울피부과",
+      "message": "리쥬란 힐러 2박스 추가 발주 부탁드립니다"
+    },
+    {
+      "msg_id": "M-1002",
+      "sender": "그린성형",
+      "message": "울트라 3.0 두 개요"
+    },
+    {
+      "msg_id": "M-1003",
+      "sender": "케어캠프 담당",
+      "message": "금일 정규건으로 접수하겠습니다"
+    },
+    {
+      "msg_id": "M-1004",
+      "sender": "서울피부과",
+      "message": "지난번 받은 힐러 1박스 반품 요청드립니다"
+    }
+  ],
+  "sources": [
+    {
+      "id": "s1",
+      "kind": "csv",
+      "label": "2026-10-14-발주메시지.csv",
+      "scope": "CSV selected data records 1:4; columns ['msg_id', 'sender', 'message']; header and preceding records scanned; later records not inspected; intended scope: 2026-10-14 발주메시지 CSV 데이터 행 1~4 (전체 4건); completeness supplied by caller",
+      "complete": true,
+      "state_paths": [
+        ""
+      ],
+      "locations": {
+        "/0/msg_id": "data record 1, column msg_id (header record 1)",
+        "/0/sender": "data record 1, column sender (header record 1)",
+        "/0/message": "data record 1, column message (header record 1)",
+        "/1/msg_id": "data record 2, column msg_id (header record 1)",
+        "/1/sender": "data record 2, column sender (header record 1)",
+        "/1/message": "data record 2, column message (header record 1)",
+        "/2/msg_id": "data record 3, column msg_id (header record 1)",
+        "/2/sender": "data record 3, column sender (header record 1)",
+        "/2/message": "data record 3, column message (header record 1)",
+        "/3/msg_id": "data record 4, column msg_id (header record 1)",
+        "/3/sender": "data record 4, column sender (header record 1)",
+        "/3/message": "data record 4, column message (header record 1)"
+      },
+      "metadata": {
+        "filename": "2026-10-14-발주메시지.csv",
+        "column_mapping": [
+          {
+            "source": "msg_id",
+            "field": "msg_id",
+            "type": "string",
+            "empty": "preserve"
+          },
+          {
+            "source": "sender",
+            "field": "sender",
+            "type": "string",
+            "empty": "preserve"
+          },
+          {
+            "source": "message",
+            "field": "message",
+            "type": "string",
+            "empty": "preserve"
+          }
+        ]
+      }
+    }
+  ],
+  "policy": {
+    "rules": [
+      "거래처 코드표: C-101 그린성형외과(서울 논현), C-205 그린성형외과의원(성남 서현), C-310 서울피부과(서울 역삼).",
+      "발주는 새 구매·납품 요청과 품목·수량이 있어야 한다. 접수 의사만 알리는 응답은 ack다. 반품·반납 요청은 return이다.",
+      "발신자 표기가 코드표의 둘 이상에 해당하고 추가 식별 정보가 없으면 보류한다. 코드표에 없는 발신자도 보류한다.",
+      "과거 대화를 전제로 품목·수량이 생략되면 보류한다."
+    ]
+  },
+  "questions": [
+    {
+      "id": "intent",
+      "type": "choice",
+      "instructions": "메시지 의도를 분류한다. 정보 부족은 기타로 처리하지 않는다.",
+      "choices": [
+        {
+          "value": "order",
+          "meaning": "품목과 수량이 명시된 새 발주 요청"
+        },
+        {
+          "value": "ack",
+          "meaning": "이미 받은 건의 접수·처리 안내"
+        },
+        {
+          "value": "return",
+          "meaning": "물품을 돌려보내려는 요청"
+        },
+        {
+          "value": "other",
+          "meaning": "발주·접수응답·반납이 아닌 독립 주제"
+        }
+      ]
+    },
+    {
+      "id": "vendor",
+      "type": "choice",
+      "instructions": "발신자(sender)가 코드표의 어느 거래처인지 고른다.",
+      "choices": [
+        {
+          "value": "C-101",
+          "meaning": "그린성형외과(서울 논현)"
+        },
+        {
+          "value": "C-205",
+          "meaning": "그린성형외과의원(성남 서현)"
+        },
+        {
+          "value": "C-310",
+          "meaning": "서울피부과(서울 역삼)"
+        }
+      ]
+    }
+  ],
+  "unit": {
+    "mode": "row",
+    "subjects": [
+      {
+        "subject_id": "M-1001",
+        "pointer": "/0",
+        "source_ids": [
+          "s1"
+        ]
+      },
+      {
+        "subject_id": "M-1002",
+        "pointer": "/1",
+        "source_ids": [
+          "s1"
+        ]
+      },
+      {
+        "subject_id": "M-1003",
+        "pointer": "/2",
+        "source_ids": [
+          "s1"
+        ]
+      },
+      {
+        "subject_id": "M-1004",
+        "pointer": "/3",
+        "source_ids": [
+          "s1"
+        ]
+      }
+    ],
+    "complete": true
+  }
+}

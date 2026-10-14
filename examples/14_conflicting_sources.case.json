@@ -1,0 +1,101 @@
+{
+  "name": "출처 간 값 충돌",
+  "input_valid": true,
+  "input": {
+    "state": {
+      "left": {
+        "item_id": "I-7",
+        "quantity": 5
+      },
+      "right": {
+        "item_id": "I-7",
+        "quantity": 8
+      }
+    },
+    "sources": [
+      {
+        "id": "left",
+        "kind": "csv",
+        "label": "가상 csv 입력",
+        "scope": "제공된 대상 전체",
+        "complete": true,
+        "state_paths": [
+          "/left"
+        ]
+      },
+      {
+        "id": "right",
+        "kind": "json",
+        "label": "가상 json 입력",
+        "scope": "제공된 대상 전체",
+        "complete": true,
+        "state_paths": [
+          "/right"
+        ]
+      }
+    ],
+    "policy": {
+      "rules": [
+        "item_id로 one_to_one 결합한다. quantity 단위는 개수다. 키가 유일하고 양쪽 수량이 있어야 비교한다.",
+        "두 출처의 우선순위는 정해지지 않았다. 서로 다르면 진위를 고르지 않는다."
+      ]
+    },
+    "questions": [
+      {
+        "id": "q1",
+        "type": "predicate",
+        "instructions": "두 원천이 하나의 실제 수량을 주장한다. 실제 수량이 5개인가?"
+      }
+    ],
+    "unit": {
+      "mode": "single",
+      "subjects": [
+        {
+          "subject_id": "I-7",
+          "pointer": "",
+          "source_ids": [
+            "left",
+            "right"
+          ]
+        }
+      ],
+      "complete": true,
+      "joins": [
+        {
+          "left_source_id": "left",
+          "right_source_id": "right",
+          "left_key": "item_id",
+          "right_key": "item_id",
+          "relationship": "one_to_one"
+        }
+      ]
+    }
+  },
+  "expected": {
+    "results": [
+      {
+        "subject_id": "I-7",
+        "id": "q1",
+        "type": "predicate",
+        "status": "needs_review",
+        "value": null,
+        "reason_code": "CONFLICTING_EVIDENCE",
+        "evidence": [
+          {
+            "source_id": "left",
+            "location": "/left/quantity",
+            "fact": "5"
+          },
+          {
+            "source_id": "right",
+            "location": "/right/quantity",
+            "fact": "8"
+          }
+        ],
+        "review_required": true
+      }
+    ]
+  },
+  "rationale": "비교 질문의 불일치 false와 진실을 확정할 수 없는 충돌 보류는 구별한다.",
+  "evaluation": "authored_expectation_not_model_run"
+}

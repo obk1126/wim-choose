@@ -1,0 +1,1 @@
+{"ledger_id": "L-00001", "question_id": "q1", "type": "choice", "key": ["민하"], "value": "p1", "decided_by": "담당자 A", "decided_at": "2026-10-01T09:00:00+00:00", "request_ref": "request-2026-10-01-003.json", "subject_id": "subject-1", "policy_hash": "sha256:920bd4ea86685b701b900a45bbf0f219523a2682a430ada0dadbdece467f7ca3", "note": "팀 A 민하로 확인"}

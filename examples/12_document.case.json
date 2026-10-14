@@ -1,0 +1,104 @@
+{
+  "name": "문서 필수 조건",
+  "input_valid": true,
+  "input": {
+    "state": "운영 안내\n담당 부서: 시설팀\n점검 주기: 매월\n",
+    "sources": [
+      {
+        "id": "s1",
+        "kind": "document",
+        "label": "가상 document 입력",
+        "scope": "제공된 대상 전체",
+        "complete": true,
+        "state_paths": [
+          ""
+        ],
+        "metadata": {
+          "filename": "notice.txt"
+        },
+        "locations": {
+          "": "lines 1:3"
+        }
+      }
+    ],
+    "policy": {
+      "rules": [
+        "제공 문서는 해당 안내문 전문이다. 필수 항목이 전문에 없으면 false."
+      ]
+    },
+    "questions": [
+      {
+        "id": "owner",
+        "type": "predicate",
+        "instructions": "담당 부서가 명시되었는가?"
+      },
+      {
+        "id": "phone",
+        "type": "predicate",
+        "instructions": "연락 전화번호가 명시되었는가?"
+      }
+    ],
+    "unit": {
+      "mode": "single",
+      "subjects": [
+        {
+          "subject_id": "subject-1",
+          "pointer": "",
+          "source_ids": [
+            "s1"
+          ]
+        }
+      ],
+      "complete": true
+    }
+  },
+  "expected": {
+    "results": [
+      {
+        "subject_id": "subject-1",
+        "id": "owner",
+        "type": "predicate",
+        "status": "decided",
+        "value": true,
+        "reason_code": "CONDITION_TRUE",
+        "evidence": [
+          {
+            "source_id": "s1",
+            "location": "",
+            "fact": "담당 부서: 시설팀"
+          }
+        ],
+        "review_required": false
+      },
+      {
+        "subject_id": "subject-1",
+        "id": "phone",
+        "type": "predicate",
+        "status": "decided",
+        "value": false,
+        "reason_code": "CONDITION_ABSENT",
+        "evidence": [
+          {
+            "source_id": "s1",
+            "location": "",
+            "fact": "",
+            "kind": "checked_scope"
+          }
+        ],
+        "review_required": false
+      }
+    ]
+  },
+  "rationale": "전문 범위(complete=true)가 확인되고 policy가 '전문에 없으면 false'로 부재의 의미를 정했으므로 전화번호 부재는 CONDITION_ABSENT다. 근거는 무관한 인용이 아니라 확인한 범위(checked_scope)다. 일부 발췌라면 동일 결론 불가.",
+  "evaluation": "authored_expectation_not_model_run",
+  "preparation": {
+    "format": "document",
+    "file": "data/notice.txt",
+    "config": "configs/notice.json",
+    "args": [
+      "--lines",
+      "1:3"
+    ],
+    "scope": "안내문 전문"
+  }
+}

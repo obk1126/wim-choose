@@ -1,0 +1,30 @@
+{
+  "policy": {
+    "rules": [
+      "거래처 코드표: C-101 그린성형외과(서울 논현), C-205 그린성형외과의원(성남 서현), C-310 서울피부과(서울 역삼).",
+      "발주는 새 구매·납품 요청과 품목·수량이 있어야 한다. 접수 의사만 알리는 응답은 ack다. 반품·반납 요청은 return이다.",
+      "발신자 표기가 코드표의 둘 이상에 해당하고 추가 식별 정보가 없으면 보류한다. 코드표에 없는 발신자도 보류한다.",
+      "과거 대화를 전제로 품목·수량이 생략되면 보류한다."
+    ]
+  },
+  "questions": [
+    {"id": "intent", "type": "choice", "instructions": "메시지 의도를 분류한다. 정보 부족은 기타로 처리하지 않는다.",
+     "choices": [
+       {"value": "order", "meaning": "품목과 수량이 명시된 새 발주 요청"},
+       {"value": "ack", "meaning": "이미 받은 건의 접수·처리 안내"},
+       {"value": "return", "meaning": "물품을 돌려보내려는 요청"},
+       {"value": "other", "meaning": "발주·접수응답·반납이 아닌 독립 주제"}]},
+    {"id": "vendor", "type": "choice", "instructions": "발신자(sender)가 코드표의 어느 거래처인지 고른다.",
+     "choices": [
+       {"value": "C-101", "meaning": "그린성형외과(서울 논현)"},
+       {"value": "C-205", "meaning": "그린성형외과의원(성남 서현)"},
+       {"value": "C-310", "meaning": "서울피부과(서울 역삼)"}]}
+  ],
+  "unit": {"mode": "row", "id_field": "msg_id"},
+  "columns": [
+    {"source": "msg_id", "field": "msg_id", "type": "string", "empty": "preserve"},
+    {"source": "sender", "field": "sender", "type": "string", "empty": "preserve"},
+    {"source": "message", "field": "message", "type": "string", "empty": "preserve"}
+  ],
+  "ledger": {"path": "../ledger/vendors.jsonl", "keys": [{"pointer": "/sender"}]}
+}

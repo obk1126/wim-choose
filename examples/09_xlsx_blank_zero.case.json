@@ -1,0 +1,156 @@
+{
+  "name": "XLSX 빈 셀과 숫자 0",
+  "input_valid": true,
+  "input": {
+    "state": [
+      {
+        "sample_id": "X-1",
+        "defects": null,
+        "flag": false
+      },
+      {
+        "sample_id": "X-2",
+        "defects": 0,
+        "flag": false
+      },
+      {
+        "sample_id": "X-3",
+        "defects": 2,
+        "flag": true
+      }
+    ],
+    "sources": [
+      {
+        "id": "s1",
+        "kind": "xlsx",
+        "label": "가상 xlsx 입력",
+        "scope": "제공된 대상 전체",
+        "complete": true,
+        "state_paths": [
+          ""
+        ],
+        "metadata": {
+          "filename": "inspection.xlsx",
+          "sheet": "Inspection",
+          "range": "A1:C4"
+        },
+        "locations": {
+          "/0/sample_id": "Inspection!A2",
+          "/0/defects": "Inspection!B2",
+          "/0/flag": "Inspection!C2",
+          "/1/sample_id": "Inspection!A3",
+          "/1/defects": "Inspection!B3",
+          "/1/flag": "Inspection!C3",
+          "/2/sample_id": "Inspection!A4",
+          "/2/defects": "Inspection!B4",
+          "/2/flag": "Inspection!C4"
+        }
+      }
+    ],
+    "policy": {
+      "rules": [
+        "defects 단위는 개수(정수)다. 빈 셀은 불량 없음이 아니라 미측정이다. flag는 보조 원자료이며 이 판정에는 사용하지 않는다."
+      ]
+    },
+    "questions": [
+      {
+        "id": "q1",
+        "type": "predicate",
+        "instructions": "불량 개수가 숫자 0이면 적합 true, 양수이면 false. 빈 셀이면 판정 보류."
+      }
+    ],
+    "unit": {
+      "mode": "row",
+      "subjects": [
+        {
+          "subject_id": "X-1",
+          "pointer": "/0",
+          "source_ids": [
+            "s1"
+          ]
+        },
+        {
+          "subject_id": "X-2",
+          "pointer": "/1",
+          "source_ids": [
+            "s1"
+          ]
+        },
+        {
+          "subject_id": "X-3",
+          "pointer": "/2",
+          "source_ids": [
+            "s1"
+          ]
+        }
+      ],
+      "complete": true
+    }
+  },
+  "expected": {
+    "results": [
+      {
+        "subject_id": "X-1",
+        "id": "q1",
+        "type": "predicate",
+        "status": "needs_review",
+        "value": null,
+        "reason_code": "MISSING_INFORMATION",
+        "evidence": [
+          {
+            "source_id": "s1",
+            "location": "/0/defects",
+            "fact": "null"
+          }
+        ],
+        "review_required": true
+      },
+      {
+        "subject_id": "X-2",
+        "id": "q1",
+        "type": "predicate",
+        "status": "decided",
+        "value": true,
+        "reason_code": "CONDITION_TRUE",
+        "evidence": [
+          {
+            "source_id": "s1",
+            "location": "/1/defects",
+            "fact": "0"
+          }
+        ],
+        "review_required": false
+      },
+      {
+        "subject_id": "X-3",
+        "id": "q1",
+        "type": "predicate",
+        "status": "decided",
+        "value": false,
+        "reason_code": "CONDITION_FALSE",
+        "evidence": [
+          {
+            "source_id": "s1",
+            "location": "/2/defects",
+            "fact": "2"
+          }
+        ],
+        "review_required": false
+      }
+    ]
+  },
+  "rationale": "빈 셀/null은 보류, 0은 적합, 2는 부적합이다. false도 0으로 바뀌지 않는다.",
+  "evaluation": "authored_expectation_not_model_run",
+  "preparation": {
+    "format": "xlsx",
+    "file": "data/inspection.xlsx",
+    "config": "configs/inspection.json",
+    "args": [
+      "--sheet",
+      "Inspection",
+      "--range",
+      "A1:C4"
+    ],
+    "scope": "검사 대상 X-1~X-3"
+  }
+}

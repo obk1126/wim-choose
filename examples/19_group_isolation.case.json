@@ -1,0 +1,122 @@
+{
+  "name": "그룹별 독립 판단",
+  "input_valid": true,
+  "input": {
+    "state": [
+      {
+        "key": {
+          "batch": "B-1"
+        },
+        "rows": [
+          {
+            "id": "a",
+            "batch": "B-1",
+            "ok": true
+          },
+          {
+            "id": "b",
+            "batch": "B-1",
+            "ok": false
+          }
+        ]
+      },
+      {
+        "key": {
+          "batch": "B-2"
+        },
+        "rows": [
+          {
+            "id": "c",
+            "batch": "B-2",
+            "ok": true
+          }
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "id": "s1",
+        "kind": "json",
+        "label": "가상 json 입력",
+        "scope": "제공된 대상 전체",
+        "complete": true,
+        "state_paths": [
+          ""
+        ]
+      }
+    ],
+    "policy": {
+      "rules": [
+        "batch 값으로 그룹을 구분하며 각 batch의 모든 행을 제공했다. 그룹 사이 정보를 섞지 않는다."
+      ]
+    },
+    "questions": [
+      {
+        "id": "q1",
+        "type": "predicate",
+        "instructions": "그룹 안의 모든 행 ok가 true인가? false가 하나라도 있으면 false."
+      }
+    ],
+    "unit": {
+      "mode": "group",
+      "subjects": [
+        {
+          "subject_id": "B-1",
+          "pointer": "/0",
+          "source_ids": [
+            "s1"
+          ]
+        },
+        {
+          "subject_id": "B-2",
+          "pointer": "/1",
+          "source_ids": [
+            "s1"
+          ]
+        }
+      ],
+      "complete": true,
+      "group_by": [
+        "batch"
+      ]
+    }
+  },
+  "expected": {
+    "results": [
+      {
+        "subject_id": "B-1",
+        "id": "q1",
+        "type": "predicate",
+        "status": "decided",
+        "value": false,
+        "reason_code": "CONDITION_FALSE",
+        "evidence": [
+          {
+            "source_id": "s1",
+            "location": "/0/rows/1/ok",
+            "fact": "false"
+          }
+        ],
+        "review_required": false
+      },
+      {
+        "subject_id": "B-2",
+        "id": "q1",
+        "type": "predicate",
+        "status": "decided",
+        "value": true,
+        "reason_code": "CONDITION_TRUE",
+        "evidence": [
+          {
+            "source_id": "s1",
+            "location": "/1/rows/0/ok",
+            "fact": "true"
+          }
+        ],
+        "review_required": false
+      }
+    ]
+  },
+  "rationale": "B-1의 false를 B-2의 근거로 쓰지 않는다.",
+  "evaluation": "authored_expectation_not_model_run"
+}

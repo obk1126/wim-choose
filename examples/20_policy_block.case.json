@@ -1,0 +1,72 @@
+{
+  "name": "명시 차단 우선",
+  "input_valid": true,
+  "input": {
+    "state": {
+      "eligible": true,
+      "blocked": true
+    },
+    "sources": [
+      {
+        "id": "s1",
+        "kind": "direct",
+        "label": "사용자 직접 입력",
+        "scope": "제공된 대상 전체",
+        "complete": true,
+        "state_paths": [
+          ""
+        ]
+      }
+    ],
+    "policy": {
+      "rules": [
+        "eligible=true라도 blocked=true이면 반드시 false다."
+      ],
+      "prohibitions": [
+        "blocked=true 상태는 허용하지 않는다."
+      ]
+    },
+    "questions": [
+      {
+        "id": "q1",
+        "type": "predicate",
+        "instructions": "업무 기준상 진행 가능한가?"
+      }
+    ],
+    "unit": {
+      "mode": "single",
+      "subjects": [
+        {
+          "subject_id": "subject-1",
+          "pointer": "",
+          "source_ids": [
+            "s1"
+          ]
+        }
+      ],
+      "complete": true
+    }
+  },
+  "expected": {
+    "results": [
+      {
+        "subject_id": "subject-1",
+        "id": "q1",
+        "type": "predicate",
+        "status": "decided",
+        "value": false,
+        "reason_code": "POLICY_BLOCKED",
+        "evidence": [
+          {
+            "source_id": "s1",
+            "location": "/blocked",
+            "fact": "true"
+          }
+        ],
+        "review_required": false
+      }
+    ]
+  },
+  "rationale": "다른 긍정 신호가 있어도 명시 차단을 무시하지 않는다.",
+  "evaluation": "authored_expectation_not_model_run"
+}

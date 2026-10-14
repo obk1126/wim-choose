@@ -1,0 +1,45 @@
+{
+  "policy": {
+    "rules": [
+      "defects 단위는 개수(정수)다. 빈 셀은 불량 없음이 아니라 미측정이다. flag는 보조 원자료이며 이 판정에는 사용하지 않는다."
+    ]
+  },
+  "questions": [
+    {
+      "id": "q1",
+      "type": "predicate",
+      "instructions": "불량 개수가 숫자 0이면 적합 true, 양수이면 false. 빈 셀이면 판정 보류."
+    }
+  ],
+  "unit": {
+    "mode": "row",
+    "id_field": "sample_id"
+  },
+  "columns": [
+    {
+      "source": "sample_id",
+      "field": "sample_id",
+      "type": "string",
+      "empty": "preserve"
+    },
+    {
+      "source": "defects",
+      "field": "defects",
+      "type": "integer",
+      "empty": "preserve",
+      "unit": "count"
+    },
+    {
+      "source": "flag",
+      "field": "flag",
+      "type": "boolean",
+      "empty": "preserve",
+      "true_values": [
+        "true"
+      ],
+      "false_values": [
+        "false"
+      ]
+    }
+  ]
+}

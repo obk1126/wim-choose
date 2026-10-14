@@ -1,0 +1,157 @@
+{
+  "name": "CSV 문의 담당 부서",
+  "input_valid": true,
+  "input": {
+    "state": [
+      {
+        "ticket_id": "T-01",
+        "message": "결제 영수증을 다시 받고 싶습니다."
+      },
+      {
+        "ticket_id": "T-02",
+        "message": "앱 로그인 오류가 납니다."
+      },
+      {
+        "ticket_id": "T-03",
+        "message": "배송일을 확인해 주세요."
+      }
+    ],
+    "sources": [
+      {
+        "id": "s1",
+        "kind": "csv",
+        "label": "가상 csv 입력",
+        "scope": "제공된 대상 전체",
+        "complete": true,
+        "state_paths": [
+          ""
+        ],
+        "metadata": {
+          "filename": "inquiries.csv"
+        },
+        "locations": {
+          "/0/message": "CSV data record 1, message",
+          "/1/message": "CSV data record 2, message",
+          "/2/message": "CSV data record 3, message"
+        }
+      }
+    ],
+    "policy": {
+      "rules": [
+        "문의 내용과 담당 업무가 하나로 대응될 때만 배정한다."
+      ]
+    },
+    "questions": [
+      {
+        "id": "q1",
+        "type": "choice",
+        "instructions": "문의별 담당 부서를 선택한다.",
+        "choices": [
+          {
+            "value": "billing",
+            "meaning": "결제·영수증"
+          },
+          {
+            "value": "tech",
+            "meaning": "소프트웨어 오류"
+          },
+          {
+            "value": "logistics",
+            "meaning": "배송 문의"
+          }
+        ]
+      }
+    ],
+    "unit": {
+      "mode": "row",
+      "subjects": [
+        {
+          "subject_id": "T-01",
+          "pointer": "/0",
+          "source_ids": [
+            "s1"
+          ]
+        },
+        {
+          "subject_id": "T-02",
+          "pointer": "/1",
+          "source_ids": [
+            "s1"
+          ]
+        },
+        {
+          "subject_id": "T-03",
+          "pointer": "/2",
+          "source_ids": [
+            "s1"
+          ]
+        }
+      ],
+      "complete": true
+    }
+  },
+  "expected": {
+    "results": [
+      {
+        "subject_id": "T-01",
+        "id": "q1",
+        "type": "choice",
+        "status": "decided",
+        "value": "billing",
+        "reason_code": "CHOICE_MATCH",
+        "evidence": [
+          {
+            "source_id": "s1",
+            "location": "/0/message",
+            "fact": "결제 영수증을 다시 받고 싶습니다."
+          }
+        ],
+        "review_required": false
+      },
+      {
+        "subject_id": "T-02",
+        "id": "q1",
+        "type": "choice",
+        "status": "decided",
+        "value": "tech",
+        "reason_code": "CHOICE_MATCH",
+        "evidence": [
+          {
+            "source_id": "s1",
+            "location": "/1/message",
+            "fact": "앱 로그인 오류가 납니다."
+          }
+        ],
+        "review_required": false
+      },
+      {
+        "subject_id": "T-03",
+        "id": "q1",
+        "type": "choice",
+        "status": "decided",
+        "value": "logistics",
+        "reason_code": "CHOICE_MATCH",
+        "evidence": [
+          {
+            "source_id": "s1",
+            "location": "/2/message",
+            "fact": "배송일을 확인해 주세요."
+          }
+        ],
+        "review_required": false
+      }
+    ]
+  },
+  "rationale": "문의별 독립 판정이며 다른 행의 내용을 사용하지 않는다.",
+  "evaluation": "authored_expectation_not_model_run",
+  "preparation": {
+    "format": "csv",
+    "file": "data/inquiries.csv",
+    "config": "configs/support.json",
+    "args": [
+      "--rows",
+      "1:3"
+    ],
+    "scope": "제공된 문의 3건"
+  }
+}

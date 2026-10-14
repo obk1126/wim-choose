@@ -1,0 +1,22 @@
+{
+  "policy": {
+    "rules": [
+      "제공 문서는 해당 안내문 전문이다. 필수 항목이 전문에 없으면 false."
+    ]
+  },
+  "questions": [
+    {
+      "id": "owner",
+      "type": "predicate",
+      "instructions": "담당 부서가 명시되었는가?"
+    },
+    {
+      "id": "phone",
+      "type": "predicate",
+      "instructions": "연락 전화번호가 명시되었는가?"
+    }
+  ],
+  "unit": {
+    "mode": "single"
+  }
+}

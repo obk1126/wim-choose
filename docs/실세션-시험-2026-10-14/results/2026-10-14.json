@@ -1,0 +1,23 @@
+{
+  "results": [
+    {"subject_id": "M-1001", "id": "intent", "type": "choice", "status": "decided", "value": "order", "reason_code": "CHOICE_MATCH",
+     "evidence": [{"source_id": "s1", "location": "/0/message", "fact": "리쥬란 힐러 2박스 추가 발주 부탁드립니다"}], "review_required": false},
+    {"subject_id": "M-1001", "id": "vendor", "type": "choice", "status": "decided", "value": "C-310", "reason_code": "CHOICE_MATCH",
+     "evidence": [{"source_id": "s1", "location": "/0/sender", "fact": "서울피부과"}], "review_required": false},
+
+    {"subject_id": "M-1002", "id": "intent", "type": "choice", "status": "decided", "value": "order", "reason_code": "CHOICE_MATCH",
+     "evidence": [{"source_id": "s1", "location": "/1/message", "fact": "울트라 3.0 두 개요"}], "review_required": false},
+    {"subject_id": "M-1002", "id": "vendor", "type": "choice", "status": "needs_review", "value": null, "reason_code": "MULTIPLE_MATCHES",
+     "evidence": [{"source_id": "s1", "location": "/1/sender", "fact": "그린성형"}], "review_required": true},
+
+    {"subject_id": "M-1003", "id": "intent", "type": "choice", "status": "decided", "value": "ack", "reason_code": "CHOICE_MATCH",
+     "evidence": [{"source_id": "s1", "location": "/2/message", "fact": "금일 정규건으로 접수하겠습니다"}], "review_required": false},
+    {"subject_id": "M-1003", "id": "vendor", "type": "choice", "status": "needs_review", "value": null, "reason_code": "MISSING_INFORMATION",
+     "evidence": [{"source_id": "s1", "location": "/2/sender", "fact": "케어캠프 담당"}], "review_required": true},
+
+    {"subject_id": "M-1004", "id": "intent", "type": "choice", "status": "decided", "value": "return", "reason_code": "CHOICE_MATCH",
+     "evidence": [{"source_id": "s1", "location": "/3/message", "fact": "지난번 받은 힐러 1박스 반품 요청드립니다"}], "review_required": false},
+    {"subject_id": "M-1004", "id": "vendor", "type": "choice", "status": "decided", "value": "C-310", "reason_code": "CHOICE_MATCH",
+     "evidence": [{"source_id": "s1", "location": "/3/sender", "fact": "서울피부과"}], "review_required": false}
+  ]
+}

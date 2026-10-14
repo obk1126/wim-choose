@@ -1,0 +1,76 @@
+{
+  "name": "중복 약어",
+  "input_valid": true,
+  "input": {
+    "state": "AP 확인 부탁드립니다.",
+    "sources": [
+      {
+        "id": "s1",
+        "kind": "direct",
+        "label": "사용자 직접 입력",
+        "scope": "제공된 대상 전체",
+        "complete": true,
+        "state_paths": [
+          ""
+        ]
+      }
+    ],
+    "policy": {
+      "rules": [
+        "문맥으로 약어 뜻 하나가 확정되지 않으면 보류한다."
+      ]
+    },
+    "questions": [
+      {
+        "id": "q1",
+        "type": "choice",
+        "instructions": "약어가 가리키는 항목을 고른다.",
+        "choices": [
+          {
+            "value": "network",
+            "meaning": "AP = 무선 접근점"
+          },
+          {
+            "value": "payment",
+            "meaning": "AP = 미지급금"
+          }
+        ]
+      }
+    ],
+    "unit": {
+      "mode": "single",
+      "subjects": [
+        {
+          "subject_id": "subject-1",
+          "pointer": "",
+          "source_ids": [
+            "s1"
+          ]
+        }
+      ],
+      "complete": true
+    }
+  },
+  "expected": {
+    "results": [
+      {
+        "subject_id": "subject-1",
+        "id": "q1",
+        "type": "choice",
+        "status": "needs_review",
+        "value": null,
+        "reason_code": "AMBIGUOUS_VALUE",
+        "evidence": [
+          {
+            "source_id": "s1",
+            "location": "",
+            "fact": "AP"
+          }
+        ],
+        "review_required": true
+      }
+    ]
+  },
+  "rationale": "같은 약어가 두 정의에 맞고 추가 문맥이 없다.",
+  "evaluation": "authored_expectation_not_model_run"
+}

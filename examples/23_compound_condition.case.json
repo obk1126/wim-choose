@@ -1,0 +1,70 @@
+{
+  "name": "복합 조건의 확정 성분",
+  "input_valid": true,
+  "input": {
+    "state": {
+      "status": "closed",
+      "due": "03/04"
+    },
+    "sources": [
+      {
+        "id": "s1",
+        "kind": "direct",
+        "label": "사용자 직접 입력",
+        "scope": "제공된 대상 전체",
+        "complete": true,
+        "state_paths": [
+          ""
+        ]
+      }
+    ],
+    "policy": {
+      "rules": [
+        "status open=열린 건, closed=닫힌 건.",
+        "날짜는 연도·월일 순서가 있어야 해석한다."
+      ]
+    },
+    "questions": [
+      {
+        "id": "q1",
+        "type": "predicate",
+        "instructions": "열린 건이며 기한이 2026-04-01 이전인가?"
+      }
+    ],
+    "unit": {
+      "mode": "single",
+      "complete": true,
+      "subjects": [
+        {
+          "subject_id": "subject-1",
+          "pointer": "",
+          "source_ids": [
+            "s1"
+          ]
+        }
+      ]
+    }
+  },
+  "expected": {
+    "results": [
+      {
+        "subject_id": "subject-1",
+        "id": "q1",
+        "type": "predicate",
+        "status": "decided",
+        "value": false,
+        "reason_code": "CONDITION_FALSE",
+        "evidence": [
+          {
+            "source_id": "s1",
+            "location": "/status",
+            "fact": "closed"
+          }
+        ],
+        "review_required": false
+      }
+    ]
+  },
+  "rationale": "AND 조건의 한 성분(열린 건)이 status=closed로 확정 거짓이므로 다른 성분(기한 03/04는 모호)을 해석하지 않고 false다. 근거는 확정 거짓을 보여준 값만 인용한다. 두 성분이 모두 모호했다면 보류다.",
+  "evaluation": "authored_expectation_not_model_run"
+}

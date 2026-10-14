@@ -1,0 +1,46 @@
+{
+  "policy": {
+    "rules": [
+      "문의 내용과 담당 업무가 하나로 대응될 때만 배정한다."
+    ]
+  },
+  "questions": [
+    {
+      "id": "q1",
+      "type": "choice",
+      "instructions": "문의별 담당 부서를 선택한다.",
+      "choices": [
+        {
+          "value": "billing",
+          "meaning": "결제·영수증"
+        },
+        {
+          "value": "tech",
+          "meaning": "소프트웨어 오류"
+        },
+        {
+          "value": "logistics",
+          "meaning": "배송 문의"
+        }
+      ]
+    }
+  ],
+  "unit": {
+    "mode": "row",
+    "id_field": "ticket_id"
+  },
+  "columns": [
+    {
+      "source": "ticket_id",
+      "field": "ticket_id",
+      "type": "string",
+      "empty": "preserve"
+    },
+    {
+      "source": "message",
+      "field": "message",
+      "type": "string",
+      "empty": "preserve"
+    }
+  ]
+}

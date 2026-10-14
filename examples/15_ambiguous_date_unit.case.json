@@ -1,0 +1,74 @@
+{
+  "name": "날짜와 단위 불명확",
+  "input_valid": true,
+  "input": {
+    "state": {
+      "due": "03/04",
+      "size": 10
+    },
+    "sources": [
+      {
+        "id": "s1",
+        "kind": "direct",
+        "label": "사용자 직접 입력",
+        "scope": "제공된 대상 전체",
+        "complete": true,
+        "state_paths": [
+          ""
+        ]
+      }
+    ],
+    "policy": {
+      "rules": [
+        "날짜의 연도·월일 순서·시간대와 크기의 단위가 모두 필요하다."
+      ]
+    },
+    "questions": [
+      {
+        "id": "q1",
+        "type": "predicate",
+        "instructions": "2026-04-01 UTC 이전 마감이며 크기가 10cm 이하인가?"
+      }
+    ],
+    "unit": {
+      "mode": "single",
+      "subjects": [
+        {
+          "subject_id": "subject-1",
+          "pointer": "",
+          "source_ids": [
+            "s1"
+          ]
+        }
+      ],
+      "complete": true
+    }
+  },
+  "expected": {
+    "results": [
+      {
+        "subject_id": "subject-1",
+        "id": "q1",
+        "type": "predicate",
+        "status": "needs_review",
+        "value": null,
+        "reason_code": "AMBIGUOUS_VALUE",
+        "evidence": [
+          {
+            "source_id": "s1",
+            "location": "/due",
+            "fact": "03/04"
+          },
+          {
+            "source_id": "s1",
+            "location": "/size",
+            "fact": "10"
+          }
+        ],
+        "review_required": true
+      }
+    ]
+  },
+  "rationale": "값 '03/04'와 10은 있지만 연도·월일 순서·시간대·단위를 정할 수 없다. 값이 있는데 뜻이 갈리는 경우이므로 SKILL.md 경계 규칙상 MISSING_INFORMATION이 아니라 AMBIGUOUS_VALUE다.",
+  "evaluation": "authored_expectation_not_model_run"
+}

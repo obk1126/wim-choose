@@ -1,0 +1,158 @@
+{
+  "name": "DB 조회 결과의 기한 확인",
+  "input_valid": true,
+  "input": {
+    "state": [
+      {
+        "record_id": "D-1",
+        "status": "open",
+        "due_at": "2026-10-14T08:00:00Z"
+      },
+      {
+        "record_id": "D-2",
+        "status": "closed",
+        "due_at": "2026-10-13T08:00:00Z"
+      },
+      {
+        "record_id": "D-3",
+        "status": "open",
+        "due_at": null
+      }
+    ],
+    "sources": [
+      {
+        "id": "s1",
+        "kind": "db_result",
+        "label": "가상 db_result 입력",
+        "scope": "제공된 대상 전체",
+        "complete": true,
+        "state_paths": [
+          ""
+        ],
+        "metadata": {
+          "query_id": "synthetic-query-1",
+          "record_ids": [
+            "D-1",
+            "D-2",
+            "D-3"
+          ]
+        }
+      }
+    ],
+    "policy": {
+      "rules": [
+        "status open=미완료, closed=완료. 모든 시각은 UTC. 기한과 기준 시점이 같으면 미초과."
+      ],
+      "as_of": "2026-10-14T09:00:00Z"
+    },
+    "questions": [
+      {
+        "id": "q1",
+        "type": "predicate",
+        "instructions": "열린 건의 기한이 기준 시점보다 이전이면 확인 필요 true, 닫힌 건은 false. 열린 건의 기한 누락은 보류."
+      }
+    ],
+    "unit": {
+      "mode": "row",
+      "subjects": [
+        {
+          "subject_id": "D-1",
+          "pointer": "/0",
+          "source_ids": [
+            "s1"
+          ]
+        },
+        {
+          "subject_id": "D-2",
+          "pointer": "/1",
+          "source_ids": [
+            "s1"
+          ]
+        },
+        {
+          "subject_id": "D-3",
+          "pointer": "/2",
+          "source_ids": [
+            "s1"
+          ]
+        }
+      ],
+      "complete": true
+    }
+  },
+  "expected": {
+    "results": [
+      {
+        "subject_id": "D-1",
+        "id": "q1",
+        "type": "predicate",
+        "status": "decided",
+        "value": true,
+        "reason_code": "CONDITION_TRUE",
+        "evidence": [
+          {
+            "source_id": "s1",
+            "location": "/0/status",
+            "fact": "open"
+          },
+          {
+            "source_id": "s1",
+            "location": "/0/due_at",
+            "fact": "2026-10-14T08:00:00Z"
+          }
+        ],
+        "review_required": false
+      },
+      {
+        "subject_id": "D-2",
+        "id": "q1",
+        "type": "predicate",
+        "status": "decided",
+        "value": false,
+        "reason_code": "CONDITION_FALSE",
+        "evidence": [
+          {
+            "source_id": "s1",
+            "location": "/1/status",
+            "fact": "closed"
+          }
+        ],
+        "review_required": false
+      },
+      {
+        "subject_id": "D-3",
+        "id": "q1",
+        "type": "predicate",
+        "status": "needs_review",
+        "value": null,
+        "reason_code": "MISSING_INFORMATION",
+        "evidence": [
+          {
+            "source_id": "s1",
+            "location": "/2/status",
+            "fact": "open"
+          },
+          {
+            "source_id": "s1",
+            "location": "/2/due_at",
+            "fact": "null"
+          }
+        ],
+        "review_required": true
+      }
+    ]
+  },
+  "rationale": "예제 시각은 가상 입력이다. 새 DB 연결 없이 제공된 조회 결과와 명시된 기준 시점을 비교한다.",
+  "evaluation": "authored_expectation_not_model_run",
+  "preparation": {
+    "format": "db-result",
+    "file": "data/query-result.json",
+    "config": "configs/deadlines.json",
+    "args": [
+      "--whole-file",
+      "--query-id",
+      "synthetic-query-1"
+    ],
+    "scope": "제공된 레코드 D-1~D-3"
+  }
+}

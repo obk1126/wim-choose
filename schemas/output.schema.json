@@ -1,0 +1,528 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "subject_id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "type": {
+            "enum": [
+              "choice",
+              "predicate",
+              "score",
+              "request"
+            ],
+            "$comment": "request는 요청 오류 봉투(__request__) 전용. 질문 결과에는 쓰지 않는다."
+          },
+          "status": {
+            "enum": [
+              "decided",
+              "needs_review",
+              "invalid_input"
+            ]
+          },
+          "value": {
+            "type": [
+              "string",
+              "boolean",
+              "number",
+              "null"
+            ]
+          },
+          "reason_code": {
+            "enum": [
+              "AMBIGUOUS_VALUE",
+              "CHOICE_MATCH",
+              "CONDITION_ABSENT",
+              "CONDITION_FALSE",
+              "CONDITION_TRUE",
+              "CONFLICTING_EVIDENCE",
+              "INCOMPLETE_SCOPE",
+              "INVALID_CHOICES",
+              "INVALID_FORMAT",
+              "INVALID_POLICY",
+              "INVALID_QUESTION",
+              "INVALID_RUBRIC",
+              "INVALID_SCOPE",
+              "INVALID_SOURCE",
+              "LEDGER_MATCH",
+              "MISSING_CONTEXT",
+              "MISSING_INFORMATION",
+              "MISSING_REQUIRED_FIELD",
+              "MULTIPLE_MATCHES",
+              "NOT_PROCESSED",
+              "POLICY_BLOCKED",
+              "RUBRIC_MATCH",
+              "UNREADABLE_SOURCE"
+            ],
+            "$comment": "코드별 정의와 동시 해당 시 우선순위는 SKILL.md '사유 코드 정의'가 정본이다."
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "source_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S",
+                  "not": {
+                    "const": "__request__"
+                  }
+                },
+                "location": {
+                  "type": "string",
+                  "pattern": "^(?:/(?:[^~/]|~0|~1)*)*$"
+                },
+                "fact": {
+                  "type": "string"
+                },
+                "kind": {
+                  "enum": [
+                    "quote",
+                    "checked_scope"
+                  ],
+                  "default": "quote",
+                  "description": "quote=location 값의 정확한 인용(생략 시 기본값). checked_scope=부재 판정에서 전부 확인한 범위, fact는 빈 문자열."
+                }
+              },
+              "required": [
+                "source_id",
+                "location",
+                "fact"
+              ],
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "kind": {
+                        "const": "checked_scope"
+                      }
+                    },
+                    "required": [
+                      "kind"
+                    ]
+                  },
+                  "then": {
+                    "properties": {
+                      "fact": {
+                        "const": ""
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "minItems": 0
+          },
+          "review_required": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "subject_id",
+          "id",
+          "type",
+          "status",
+          "value",
+          "reason_code",
+          "evidence",
+          "review_required"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "decided"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "reason_code": {
+                  "enum": [
+                    "CHOICE_MATCH",
+                    "CONDITION_TRUE",
+                    "CONDITION_FALSE",
+                    "CONDITION_ABSENT",
+                    "RUBRIC_MATCH",
+                    "POLICY_BLOCKED",
+                    "LEDGER_MATCH"
+                  ]
+                },
+                "value": {
+                  "not": {
+                    "type": "null"
+                  }
+                },
+                "review_required": {
+                  "const": false
+                },
+                "evidence": {
+                  "minItems": 1
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "needs_review"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "reason_code": {
+                  "enum": [
+                    "MISSING_INFORMATION",
+                    "AMBIGUOUS_VALUE",
+                    "MULTIPLE_MATCHES",
+                    "CONFLICTING_EVIDENCE",
+                    "INCOMPLETE_SCOPE",
+                    "MISSING_CONTEXT",
+                    "UNREADABLE_SOURCE",
+                    "NOT_PROCESSED",
+                    "POLICY_BLOCKED"
+                  ]
+                },
+                "value": {
+                  "type": "null"
+                },
+                "review_required": {
+                  "const": true
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "invalid_input"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "reason_code": {
+                  "enum": [
+                    "MISSING_REQUIRED_FIELD",
+                    "INVALID_QUESTION",
+                    "INVALID_CHOICES",
+                    "INVALID_RUBRIC",
+                    "INVALID_SCOPE",
+                    "INVALID_SOURCE",
+                    "INVALID_FORMAT",
+                    "INVALID_POLICY"
+                  ]
+                },
+                "value": {
+                  "type": "null"
+                },
+                "review_required": {
+                  "const": true
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "decided"
+                },
+                "type": {
+                  "const": "choice"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "value": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "decided"
+                },
+                "type": {
+                  "const": "predicate"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "value": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "decided"
+                },
+                "type": {
+                  "const": "score"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "value": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "decided"
+                },
+                "type": {
+                  "const": "choice"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "reason_code": {
+                  "enum": [
+                    "CHOICE_MATCH",
+                    "POLICY_BLOCKED",
+                    "LEDGER_MATCH"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "decided"
+                },
+                "type": {
+                  "const": "score"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "reason_code": {
+                  "enum": [
+                    "RUBRIC_MATCH",
+                    "LEDGER_MATCH"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "decided"
+                },
+                "type": {
+                  "const": "predicate"
+                },
+                "value": {
+                  "const": true
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "reason_code": {
+                  "enum": [
+                    "CONDITION_TRUE",
+                    "LEDGER_MATCH"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "decided"
+                },
+                "type": {
+                  "const": "predicate"
+                },
+                "value": {
+                  "const": false
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "reason_code": {
+                  "enum": [
+                    "CONDITION_FALSE",
+                    "CONDITION_ABSENT",
+                    "POLICY_BLOCKED",
+                    "LEDGER_MATCH"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "reason_code": {
+                  "const": "CONDITION_ABSENT"
+                }
+              },
+              "required": [
+                "reason_code"
+              ]
+            },
+            "then": {
+              "properties": {
+                "type": {
+                  "const": "predicate"
+                },
+                "value": {
+                  "const": false
+                },
+                "evidence": {
+                  "items": {
+                    "required": [
+                      "kind"
+                    ],
+                    "properties": {
+                      "kind": {
+                        "const": "checked_scope"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "reason_code": {
+                  "not": {
+                    "const": "CONDITION_ABSENT"
+                  }
+                }
+              },
+              "required": [
+                "reason_code"
+              ]
+            },
+            "then": {
+              "properties": {
+                "evidence": {
+                  "items": {
+                    "properties": {
+                      "kind": {
+                        "const": "quote"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "request"
+                }
+              },
+              "required": [
+                "type"
+              ]
+            },
+            "then": {
+              "properties": {
+                "subject_id": {
+                  "const": "__request__"
+                },
+                "id": {
+                  "const": "__request__"
+                },
+                "status": {
+                  "const": "invalid_input"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "anyOf": [
+                {
+                  "properties": {
+                    "subject_id": {
+                      "const": "__request__"
+                    }
+                  },
+                  "required": [
+                    "subject_id"
+                  ]
+                },
+                {
+                  "properties": {
+                    "id": {
+                      "const": "__request__"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                }
+              ]
+            },
+            "then": {
+              "properties": {
+                "type": {
+                  "const": "request"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "results"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Wim-choose judgment results"
+}

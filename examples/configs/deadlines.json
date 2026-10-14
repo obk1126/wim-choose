@@ -1,0 +1,19 @@
+{
+  "policy": {
+    "rules": [
+      "status open=미완료, closed=완료. 모든 시각은 UTC. 기한과 기준 시점이 같으면 미초과."
+    ],
+    "as_of": "2026-10-14T09:00:00Z"
+  },
+  "questions": [
+    {
+      "id": "q1",
+      "type": "predicate",
+      "instructions": "열린 건의 기한이 기준 시점보다 이전이면 확인 필요 true, 닫힌 건은 false. 열린 건의 기한 누락은 보류."
+    }
+  ],
+  "unit": {
+    "mode": "row",
+    "id_field": "record_id"
+  }
+}

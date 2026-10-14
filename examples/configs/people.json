@@ -1,0 +1,35 @@
+{
+  "policy": {
+    "rules": [
+      "이름 일치 후보가 둘 이상이고 추가 식별 정보가 없으면 보류한다."
+    ]
+  },
+  "questions": [
+    {
+      "id": "q1",
+      "type": "choice",
+      "instructions": "이름으로 지정한 후보를 고른다.",
+      "choices": [
+        {
+          "value": "p1",
+          "meaning": "팀 A의 민하"
+        },
+        {
+          "value": "p2",
+          "meaning": "팀 B의 민하"
+        }
+      ]
+    }
+  ],
+  "unit": {
+    "mode": "single"
+  },
+  "ledger": {
+    "path": "../data/ledger.jsonl",
+    "keys": [
+      {
+        "pointer": "/requested_name"
+      }
+    ]
+  }
+}

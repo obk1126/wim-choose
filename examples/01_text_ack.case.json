@@ -1,0 +1,95 @@
+{
+  "name": "접수응답과 신규 발주 구분",
+  "input_valid": true,
+  "input": {
+    "state": "금일 정규건으로 접수하겠습니다",
+    "sources": [
+      {
+        "id": "s1",
+        "kind": "direct",
+        "label": "사용자 직접 입력",
+        "scope": "제공된 대상 전체",
+        "complete": true,
+        "state_paths": [
+          ""
+        ]
+      }
+    ],
+    "policy": {
+      "rules": [
+        "발주는 새 구매·납품 요청과 품목·수량이 있어야 한다. 접수 의사만 알리는 응답은 ack다.",
+        "과거 대화를 전제로 품목·수량이 생략되면 보류한다."
+      ]
+    },
+    "questions": [
+      {
+        "id": "q1",
+        "type": "choice",
+        "instructions": "메시지 의도를 분류하라. 정보 부족은 기타로 처리하지 않는다.",
+        "choices": [
+          {
+            "value": "order",
+            "meaning": "품목과 수량이 명시된 새 발주 요청"
+          },
+          {
+            "value": "ack",
+            "meaning": "이미 받은 건의 접수·처리 안내"
+          },
+          {
+            "value": "return",
+            "meaning": "물품을 돌려보내려는 요청"
+          },
+          {
+            "value": "other",
+            "meaning": "발주·접수응답·반납이 아닌 독립 주제"
+          }
+        ]
+      }
+    ],
+    "unit": {
+      "mode": "single",
+      "subjects": [
+        {
+          "subject_id": "subject-1",
+          "pointer": "",
+          "source_ids": [
+            "s1"
+          ]
+        }
+      ],
+      "complete": true
+    }
+  },
+  "expected": {
+    "results": [
+      {
+        "subject_id": "subject-1",
+        "id": "q1",
+        "type": "choice",
+        "status": "decided",
+        "value": "ack",
+        "reason_code": "CHOICE_MATCH",
+        "evidence": [
+          {
+            "source_id": "s1",
+            "location": "",
+            "fact": "금일 정규건으로 접수하겠습니다"
+          }
+        ],
+        "review_required": false
+      }
+    ]
+  },
+  "rationale": "접수 안내이며 새 품목·수량 요청이 아니다.",
+  "evaluation": "authored_expectation_not_model_run",
+  "preparation": {
+    "format": "text",
+    "file": "data/ack.txt",
+    "config": "configs/message.json",
+    "args": [
+      "--lines",
+      "1:1"
+    ],
+    "scope": "제공된 접수응답 메시지 전문"
+  }
+}

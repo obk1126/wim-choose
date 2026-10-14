@@ -1,0 +1,14 @@
+{
+  "results": [
+    {"subject_id": "M-1005", "id": "intent", "type": "choice", "status": "decided", "value": "order", "reason_code": "CHOICE_MATCH",
+     "evidence": [{"source_id": "s1", "location": "/0/input/message", "fact": "울트라 3.0 한 개 추가요"}], "review_required": false},
+    {"subject_id": "M-1005", "id": "vendor", "type": "choice", "status": "decided", "value": "C-101", "reason_code": "LEDGER_MATCH",
+     "evidence": [{"source_id": "ledger", "location": "/0/ledger/0/value", "fact": "C-101"},
+                  {"source_id": "s1", "location": "/0/input/sender", "fact": "그린성형"}], "review_required": false},
+
+    {"subject_id": "M-1006", "id": "intent", "type": "choice", "status": "decided", "value": "ack", "reason_code": "CHOICE_MATCH",
+     "evidence": [{"source_id": "s1", "location": "/1/input/message", "fact": "접수 확인했습니다 감사합니다"}], "review_required": false},
+    {"subject_id": "M-1006", "id": "vendor", "type": "choice", "status": "decided", "value": "C-310", "reason_code": "CHOICE_MATCH",
+     "evidence": [{"source_id": "s1", "location": "/1/input/sender", "fact": "서울피부과"}], "review_required": false}
+  ]
+}
