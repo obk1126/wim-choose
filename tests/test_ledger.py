@@ -71,6 +71,9 @@ class LedgerTests(unittest.TestCase):
         self.assertEqual(['Min Ha'], L.subject_key(req['state'], req['unit']['subjects'][0], keys))
         with self.assertRaises(ValueError):
             L.subject_key(req['state'], req['unit']['subjects'][0], [{'pointer': '/ok'}])
+        # alpha_prefix keeps the letters of a code; a code without letters is kept whole, never emptied.
+        self.assertEqual('sale', L.normalize('SALE021', ['alpha_prefix', 'lower']))
+        self.assertEqual('021', L.normalize('021', ['alpha_prefix']))
 
     def test_recall_wraps_rows_and_rewrites_pointers(self):
         req, cfg = row_request(), row_config()

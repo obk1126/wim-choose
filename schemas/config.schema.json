@@ -222,7 +222,8 @@
                     "nfkc",
                     "trim",
                     "collapse_spaces",
-                    "lower"
+                    "lower",
+                    "alpha_prefix"
                   ]
                 }
               }

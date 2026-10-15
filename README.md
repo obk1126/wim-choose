@@ -150,7 +150,9 @@ python3 "$WIM_SKILL_DIR/scripts/ledger.py" recall --request request.json --confi
 python3 "$WIM_SKILL_DIR/scripts/ledger.py" replay --requests requests/ --results results/ --config configs/people.json
 ```
 
-설정의 `ledger`에 파일 경로(설정 파일 기준 상대경로)와 키를 둔다. 키는 대상 기준 JSON Pointer이고 정규화(nfkc·trim·공백 축약·소문자, 기본 전부)는 설정으로만 한다. 유사도 매칭은 없다. 장부는 고객별 1개이며 공유 스킬에 커밋하지 않는다.
+설정의 `ledger`에 파일 경로(설정 파일 기준 상대경로)와 키를 둔다. 키는 대상 기준 JSON Pointer 하나 이상이고 정규화(`nfkc`·`trim`·`collapse_spaces`·`lower`, 기본 전부. 코드의 영문 접두만 남기는 `alpha_prefix`는 명시할 때만)는 설정으로만 한다. 유사도 매칭은 없다. 장부는 고객별 1개이며 공유 스킬에 커밋하지 않는다.
+
+키의 폭은 **그 확정이 실제로 같은 답을 갖는 범위**만큼만 넓게 잡는다. 폴더·카테고리처럼 넓은 키는 그 안의 대상이 전부 같은 성격일 때만 쓴다. 그렇지 않으면 이름 자체를 키로 쓰거나 복합 키로 좁힌다(예: 메뉴 폴더 + 화면 코드 접두 `[{"pointer":"/parent_menu"},{"pointer":"/screen_code","normalize":["nfkc","trim","alpha_prefix","lower"]}]`). 장부는 보류를 줄이지만 넓게 적은 장부는 틀린 결정도 같은 속도로 늘린다. 검증기는 장부 값과의 일치를 확인할 뿐 장부 내용의 옳음은 확인하지 못한다. `confirm`은 같은 키를 가진 다른 대상이 그 요청 안에 몇 건인지 stderr로 알려 주므로, 확정하는 순간 그 키가 덮는 범위를 본다.
 
 가드:
 - 장부 기록에는 누가·언제·어느 요청·policy 해시가 남는다. policy나 질문 문구가 바뀌면 기록은 `stale`이 되어 적용되지 않는다. 옛 기준의 확정이 새 기준에 자동으로 흘러들지 않는다.

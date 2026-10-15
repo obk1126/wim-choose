@@ -27,6 +27,8 @@ NORMALIZERS = {
     'trim': str.strip,
     'collapse_spaces': lambda s: re.sub(r'\s+', ' ', s),
     'lower': str.lower,
+    # Leading letters of a code (SALE021 -> SALE); a code with no letter prefix stays whole.
+    'alpha_prefix': lambda s: re.match(r'[A-Za-z]*', s).group(0) or s,
 }
 DEFAULT_NORMALIZE = ['nfkc', 'trim', 'collapse_spaces', 'lower']
 INJECTED_FIELDS = ('ledger_id', 'question_id', 'value', 'decided_by', 'decided_at', 'key')
@@ -125,6 +127,13 @@ def confirm(args):
     }
     if args.note:
         entry['note'] = args.note
+    # A key that also matches other subjects of this request will decide them too; say so.
+    covered = [s['subject_id'] for s in request['unit']['subjects']
+               if s['subject_id'] != subject['subject_id']
+               and subject_key(request['state'], s, config['ledger']['keys']) == entry['key']]
+    if covered:
+        print(json.dumps({'warning': f'key also covers {len(covered)} other subject(s) in this request',
+                          'subject_ids': covered}, ensure_ascii=False), file=sys.stderr)
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open('a', encoding='utf-8') as stream:
         stream.write(json.dumps(entry, ensure_ascii=False) + '\n')
